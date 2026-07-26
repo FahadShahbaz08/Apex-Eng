@@ -11,10 +11,21 @@ Verified in the running application:
 - Party ledger includes Quantity, Price per unit and Product total.
 - Invoice can be opened from the ledger and edited from its popup.
 - Pending orders is a sidebar module with customer, multi-product lines, quantity, unit price, totals, dates and status.
+- Pending orders is positioned directly below Sales & invoices in the sidebar.
 - Raw materials is a separate sidebar module.
 - Items & stock remains the general item, rack, adjustment and stock-movement module.
 - Raw-material creation locks the item type to Raw Material.
 - General item creation excludes Raw Material from its item-type choices.
+- Raw-material adjustments only allow Raw Material items; Items & stock adjustments exclude Raw Material items.
+- Customers and Suppliers are separate, dedicated sidebar directories; Both-role parties remain visible in each.
+- Sidebar modules follow the requested manufacturing and accounting workflow order.
+- Raw materials is immediately after Dashboard, Suppliers is next, and Customers is immediately before Sales & invoices.
+- Every product row in a multi-product invoice shows its cumulative running balance.
+- Party-ledger running-balance behavior is unchanged; overall ledger, account ledger and invoices are newest-first.
+- Every dropdown includes a searchable option filter, including dropdowns added when a modal opens.
+- Sales invoices can be deleted from the register or invoice popup, reversing stock, party-ledger and journal postings.
+- Audit entries identify the signed-in administrator by name, username and role, so actions from multiple admins are attributable.
+- PDF output is available for the complete overall ledger and selected customer/supplier statements.
 - SKU/item codes are generated automatically using type-specific sequences.
 - Existing MongoDB data is preserved by additive schema migration version 6.
 
@@ -22,4 +33,5 @@ Validation completed:
 
 - Clean production build passed.
 - Invoice edit reversal/reposting engine passed stock, party-ledger and journal assertions.
+- Invoice deletion reversal and two-administrator attribution assertions passed.
 - The regenerated active application loaded and synchronized with MongoDB.

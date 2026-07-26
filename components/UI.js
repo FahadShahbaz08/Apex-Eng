@@ -1,5 +1,44 @@
 "use client";
 
+import { Children, isValidElement, useEffect, useState } from "react";
+
+export function useDropdownSearch() {
+  useEffect(() => {
+    const enhance = root => root.querySelectorAll?.("select:not([data-search-ready])").forEach(select => {
+      if (select.closest(".searchable-select")) return;
+      select.dataset.searchReady = "true";
+      const search = document.createElement("input");
+      search.type = "search";
+      search.className = "native-select-search";
+      search.placeholder = "Search options…";
+      search.setAttribute("aria-label", "Search dropdown options");
+      search.autocomplete = "off";
+      search.addEventListener("input", () => {
+        const query = search.value.trim().toLowerCase();
+        [...select.options].forEach(option => {
+          option.hidden = Boolean(option.value) && !option.text.toLowerCase().includes(query);
+        });
+      });
+      select.before(search);
+    });
+    enhance(document);
+    const observer = new MutationObserver(records => records.forEach(record => record.addedNodes.forEach(node => node.nodeType === 1 && enhance(node))));
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, []);
+}
+
+export function SearchableSelect({ children, onChange, searchPlaceholder = "Search options…", ...props }) {
+  const [query, setQuery] = useState("");
+  const options = Children.toArray(children);
+  const filtered = options.filter(child => {
+    if (!isValidElement(child) || child.type !== "option") return true;
+    if (child.props.value === "") return true;
+    return String(child.props.children ?? "").toLowerCase().includes(query.trim().toLowerCase());
+  });
+  return <div className="searchable-select"><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder={searchPlaceholder} aria-label={searchPlaceholder} autoComplete="off" /><select {...props} onChange={event => { setQuery(""); onChange?.(event); }}>{filtered}</select></div>;
+}
+
 export function Button({ children, variant = "solid", ...props }) {
   return <button className={`button ${variant}`} {...props}>{children}</button>;
 }

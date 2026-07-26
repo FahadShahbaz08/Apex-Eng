@@ -24,26 +24,36 @@ Import the complete source repository into Vercel; do not upload `.next`. Add th
 - items with Pieces/Kg/Box units (Pieces is default)
 - optional rack assignment throughout stock, purchase, sale and production
 - raw materials, finished goods, stock movements and rack transfers
-- parties as customers, suppliers or both
+- separate Customers and Suppliers directories; parties marked Both appear in both directories
 - BOM versions with unlimited materials and custom conversion costs
 - production consumption, finished receipt and unit-cost calculation
 - purchase invoices and vendor payables
 - printable sales invoices and customer receivables
 - editable posted invoices with stock, ledger and journal reversal/reposting
+- deletable sales invoices with automatic reversal of their stock movements, customer ledger and journal posting
 - pending customer orders with multi-product quantities, unit prices and required dates
+- Pending orders appears directly below Sales & invoices in the sidebar
 - customer receipts, supplier payments, expenses, cash and bank books
 - overall, party, account and invoice ledgers
 - itemized party-ledger lines with quantity, unit price and product total
+- a running balance on every individual product line of a multi-product invoice
+- newest-first party and account ledger statements with the latest running balance at the top
+- newest-first overall ledger, account ledger and invoice register; the verified party-ledger balance behavior is preserved
+- print-ready PDF export for the complete overall ledger and any selected customer or supplier ledger
 - customer-ledger Received and supplier-ledger Sent presentation
 - quantity and item details in party ledgers
 - profit, stock and operational reports with CSV exports
 - administrator and limited-access users with server-enforced permissions
+- administrator accountability log records the signed-in admin's name, username, role, time, action and detail
+- searchable option filtering on every dropdown, including dynamically opened transaction forms
 - shared MongoDB state, optimistic concurrency checking and periodic synchronization
 - JSON backup/restore and additive schema migration
 - monochrome light and dark themes
 - dedicated raw-material inventory section alongside general item/stock management
+- separate adjustment pickers: raw-material adjustments only list raw materials, while item/stock adjustments exclude raw materials
 - locked Raw Material classification in the raw-material form; general Items never offers Raw Material
 - automatic type-based SKU generation (`RM-0001`, `FG-0001`, `CON-0001`, `ITM-0001`)
+- workflow-ordered sidebar: Dashboard, Raw materials, Suppliers, BOM, Production, Purchases, Items & stock, Customers, Sales & invoices, Pending orders, Cash & bank, Ledger, Expenses, Reports, Settings & backup
 
 ## Data safety and expansion
 

@@ -40,7 +40,7 @@ export function ERPProvider({ children }) {
 
   const mutate = (operation, permission = "all") => {
     if (!user || (permission && !user.permissions?.includes("all") && !user.permissions?.includes(permission))) throw new Error("You do not have permission for this action.");
-    const next = structuredClone(stateRef.current); const result = operation(next);
+    const next = structuredClone(stateRef.current); next.__actor = { id: user.id || "environment-admin", name: user.name, username: user.username, role: user.role }; const result = operation(next); delete next.__actor;
     stateRef.current = next; setState(next); saveSnapshot(next, permission); return result;
   };
   const replace = (next) => mutate(s => Object.assign(s, migrateERP(next)), "all");
