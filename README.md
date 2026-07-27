@@ -22,6 +22,9 @@ Import the complete source repository into Vercel; do not upload `.next`. Add th
 ## Included workflows
 
 - items with Pieces/Kg/Box units (Pieces is default)
+- edit and delete actions for BOMs, products, raw materials, customers and suppliers
+- dependency-aware deletion safeguards prevent historical BOM, stock and accounting references from being orphaned
+- stock corrections remain auditable adjustments; deleting an unused item also removes only its standalone opening/adjustment movements, while source-document movements remain protected
 - optional rack assignment throughout stock, purchase, sale and production
 - raw materials, finished goods, stock movements and rack transfers
 - separate Customers and Suppliers directories; parties marked Both appear in both directories
@@ -34,6 +37,9 @@ Import the complete source repository into Vercel; do not upload `.next`. Add th
 - pending customer orders with multi-product quantities, unit prices and required dates
 - Pending orders appears directly below Sales & invoices in the sidebar
 - customer receipts, supplier payments, expenses, cash and bank books
+- Cheque is the default party-payment type, with cheque number/date fields and due/overdue dashboard reminders
+- Cash, bank transfer, online payment and other payment methods remain available
+- balanced intra-bank transfers move value between any two cash/bank accounts and appear in their own register
 - overall, party, account and invoice ledgers
 - itemized party-ledger lines with quantity, unit price and product total
 - a running balance on every individual product line of a multi-product invoice
@@ -46,6 +52,7 @@ Import the complete source repository into Vercel; do not upload `.next`. Add th
 - administrator and limited-access users with server-enforced permissions
 - administrator accountability log records the signed-in admin's name, username, role, time, action and detail
 - searchable option filtering on every dropdown, including dynamically opened transaction forms
+- dropdown search uses one integrated combobox field: click the current selection, type, and choose a filtered result
 - shared MongoDB state, optimistic concurrency checking and periodic synchronization
 - JSON backup/restore and additive schema migration
 - monochrome light and dark themes
@@ -53,6 +60,7 @@ Import the complete source repository into Vercel; do not upload `.next`. Add th
 - separate adjustment pickers: raw-material adjustments only list raw materials, while item/stock adjustments exclude raw materials
 - locked Raw Material classification in the raw-material form; general Items never offers Raw Material
 - automatic type-based SKU generation (`RM-0001`, `FG-0001`, `CON-0001`, `ITM-0001`)
+- application typography is scaled to 1.8× with responsive wrapping for forms, buttons and tables
 - workflow-ordered sidebar: Dashboard, Raw materials, Suppliers, BOM, Production, Purchases, Items & stock, Customers, Sales & invoices, Pending orders, Cash & bank, Ledger, Expenses, Reports, Settings & backup
 
 ## Data safety and expansion

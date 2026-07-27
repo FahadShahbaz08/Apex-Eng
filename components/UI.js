@@ -1,25 +1,27 @@
 "use client";
 
-import { Children, isValidElement, useEffect, useState } from "react";
+import { Children, isValidElement, useEffect, useMemo, useRef, useState } from "react";
 
 export function useDropdownSearch() {
   useEffect(() => {
     const enhance = root => root.querySelectorAll?.("select:not([data-search-ready])").forEach(select => {
       if (select.closest(".searchable-select")) return;
       select.dataset.searchReady = "true";
-      const search = document.createElement("input");
-      search.type = "search";
-      search.className = "native-select-search";
-      search.placeholder = "Search options…";
-      search.setAttribute("aria-label", "Search dropdown options");
-      search.autocomplete = "off";
-      search.addEventListener("input", () => {
-        const query = search.value.trim().toLowerCase();
-        [...select.options].forEach(option => {
-          option.hidden = Boolean(option.value) && !option.text.toLowerCase().includes(query);
-        });
+      const list = document.createElement("datalist");
+      const input = document.createElement("input");
+      const listId = `options-${Math.random().toString(36).slice(2)}`;
+      list.id = listId; input.type = "search"; input.className = "native-combobox-input"; input.setAttribute("list", listId); input.autocomplete = "off";
+      const refresh = () => {
+        list.replaceChildren(...[...select.options].filter(option => option.value).map(option => { const node = document.createElement("option"); node.value = option.text; return node; }));
+        input.value = select.selectedOptions[0]?.text || ""; input.placeholder = select.options[0]?.text || "Search options…";
+      };
+      input.addEventListener("focus", () => input.select());
+      input.addEventListener("change", () => {
+        const match = [...select.options].find(option => option.text.toLowerCase() === input.value.trim().toLowerCase());
+        if (match) { select.value = match.value; select.dispatchEvent(new Event("change", { bubbles: true })); }
+        refresh();
       });
-      select.before(search);
+      select.addEventListener("change", refresh); select.classList.add("native-combobox-select"); select.before(input, list); refresh();
     });
     enhance(document);
     const observer = new MutationObserver(records => records.forEach(record => record.addedNodes.forEach(node => node.nodeType === 1 && enhance(node))));
@@ -29,14 +31,20 @@ export function useDropdownSearch() {
 }
 
 export function SearchableSelect({ children, onChange, searchPlaceholder = "Search options…", ...props }) {
-  const [query, setQuery] = useState("");
-  const options = Children.toArray(children);
-  const filtered = options.filter(child => {
-    if (!isValidElement(child) || child.type !== "option") return true;
-    if (child.props.value === "") return true;
-    return String(child.props.children ?? "").toLowerCase().includes(query.trim().toLowerCase());
-  });
-  return <div className="searchable-select"><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder={searchPlaceholder} aria-label={searchPlaceholder} autoComplete="off" /><select {...props} onChange={event => { setQuery(""); onChange?.(event); }}>{filtered}</select></div>;
+  const text = value => Children.toArray(value).map(part => typeof part === "string" || typeof part === "number" ? part : "").join("");
+  const options = useMemo(() => Children.toArray(children).filter(child => isValidElement(child) && child.type === "option").map(child => ({ value: String(child.props.value ?? text(child.props.children)), label: text(child.props.children), disabled: child.props.disabled })), [children]);
+  const controlled = props.value !== undefined, initial = String(props.defaultValue ?? "");
+  const [internal, setInternal] = useState(initial), [query, setQuery] = useState(""), [open, setOpen] = useState(false);
+  const inputRef = useRef(null), selectedValue = controlled ? String(props.value ?? "") : internal;
+  const selected = options.find(option => option.value === selectedValue), visible = options.filter(option => option.value && option.label.toLowerCase().includes(query.trim().toLowerCase()));
+  const choose = option => {
+    if (option.disabled) return;
+    if (!controlled) setInternal(option.value);
+    setQuery(""); setOpen(false); inputRef.current?.setCustomValidity("");
+    onChange?.({ target: { value: option.value, name: props.name }, currentTarget: { value: option.value, name: props.name } });
+  };
+  const display = open ? query : selected?.label || "";
+  return <div className="searchable-select"><input ref={inputRef} type="search" value={display} placeholder={selected?.label || options.find(option => !option.value)?.label || searchPlaceholder} aria-label={searchPlaceholder} autoComplete="off" required={props.required} onFocus={event => { setQuery(""); setOpen(true); event.currentTarget.select(); }} onChange={event => { setQuery(event.target.value); setOpen(true); event.currentTarget.setCustomValidity("Choose an option from the list."); }} onBlur={() => setTimeout(() => { setOpen(false); setQuery(""); inputRef.current?.setCustomValidity(selectedValue ? "" : props.required ? "Choose an option from the list." : ""); }, 120)} /><input type="hidden" name={props.name} value={selectedValue} />{open && <div className="combobox-menu" role="listbox">{visible.length ? visible.map(option => <button type="button" role="option" aria-selected={option.value === selectedValue} disabled={option.disabled} key={option.value} onMouseDown={event => event.preventDefault()} onClick={() => choose(option)}>{option.label}</button>) : <span>No matching option</span>}</div>}</div>;
 }
 
 export function Button({ children, variant = "solid", ...props }) {
