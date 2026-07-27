@@ -28,6 +28,9 @@ Verified in the running application:
 - BOMs, finished products, raw materials, customers and suppliers have edit/delete controls with transaction-history safeguards.
 - Stock corrections use auditable adjustments; deleting an unused item removes only its standalone stock records, while purchase, sale, production and transfer history stays protected.
 - Cheque is the default payment method and requires cheque date/number; due and overdue cheques appear on the dashboard.
+- Cash & bank provides a Cheques in hand button, held-value summary, detailed current-held register, full history and audited status transitions.
+- A full-screen safety lock blocks editing whenever the browser is offline or the backend cannot ping MongoDB, including connected-Wi-Fi-without-internet cases.
+- Failed writes restore the last confirmed server snapshot, and connectivity is automatically retested every five seconds.
 - Intra-bank transfers post one balanced journal entry and update both selected account balances.
 - Searchable dropdowns are single integrated combobox fields rather than separate search and selection controls.
 - Typography and controls use the requested 1.3× scale with responsive wrapping.

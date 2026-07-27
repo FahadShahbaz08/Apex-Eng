@@ -38,6 +38,8 @@ Import the complete source repository into Vercel; do not upload `.next`. Add th
 - Pending orders appears directly below Sales & invoices in the sidebar
 - customer receipts, supplier payments, expenses, cash and bank books
 - Cheque is the default party-payment type, with cheque number/date fields and due/overdue dashboard reminders
+- Cash & bank includes a clickable Cheques in hand register with customer, amount, dates, account, reference and due-state details
+- cheque workflow statuses include In hand, Deposited, Cleared and Bounced while preserving complete cheque history
 - Cash, bank transfer, online payment and other payment methods remain available
 - balanced intra-bank transfers move value between any two cash/bank accounts and appear in their own register
 - overall, party, account and invoice ledgers
@@ -54,6 +56,9 @@ Import the complete source repository into Vercel; do not upload `.next`. Add th
 - searchable option filtering on every dropdown, including dynamically opened transaction forms
 - dropdown search uses one integrated combobox field: click the current selection, type, and choose a filtered result
 - shared MongoDB state, optimistic concurrency checking and periodic synchronization
+- fail-closed connectivity guard checks both the browser network and a real MongoDB ping every five seconds
+- full-screen offline safety lock prevents edits when Wi-Fi exists without internet or MongoDB is unreachable
+- failed saves roll the interface back to the last server-confirmed snapshot instead of leaving unsafe unsaved state
 - JSON backup/restore and additive schema migration
 - monochrome light and dark themes
 - dedicated raw-material inventory section alongside general item/stock management
