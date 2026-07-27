@@ -30,7 +30,7 @@ Verified in the running application:
 - Cheque is the default payment method and requires cheque date/number; due and overdue cheques appear on the dashboard.
 - Intra-bank transfers post one balanced journal entry and update both selected account balances.
 - Searchable dropdowns are single integrated combobox fields rather than separate search and selection controls.
-- Typography and controls use the requested 1.8× scale with responsive wrapping.
+- Typography and controls use the requested 1.3× scale with responsive wrapping.
 - PDF output is available for the complete overall ledger and selected customer/supplier statements.
 - SKU/item codes are generated automatically using type-specific sequences.
 - Existing MongoDB data is preserved by additive schema migration version 7.

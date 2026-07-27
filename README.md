@@ -60,7 +60,7 @@ Import the complete source repository into Vercel; do not upload `.next`. Add th
 - separate adjustment pickers: raw-material adjustments only list raw materials, while item/stock adjustments exclude raw materials
 - locked Raw Material classification in the raw-material form; general Items never offers Raw Material
 - automatic type-based SKU generation (`RM-0001`, `FG-0001`, `CON-0001`, `ITM-0001`)
-- application typography is scaled to 1.8× with responsive wrapping for forms, buttons and tables
+- application typography is scaled to 1.3× with responsive wrapping for forms, buttons and tables
 - workflow-ordered sidebar: Dashboard, Raw materials, Suppliers, BOM, Production, Purchases, Items & stock, Customers, Sales & invoices, Pending orders, Cash & bank, Ledger, Expenses, Reports, Settings & backup
 
 ## Data safety and expansion
