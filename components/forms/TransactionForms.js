@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useERP } from "../ERPContext";
-import { addBOM, addPendingOrder, money, postBankTransfer, postExpense, postPayment, postProduction, postPurchase, postSale, recordAudit, stockFor, updateBOM, updateSale } from "../../lib/erp";
+import { addBOM, addPendingOrder, money, postBankTransfer, postExpense, postPayment, postProduction, postPurchase, postSale, recordAudit, stockFor, updateBOM, updatePayment, updateSale } from "../../lib/erp";
 import { dateNow, id } from "../../lib/schema";
 import { Button, ErrorText, Field, FormActions, Modal, SearchableSelect } from "../UI";
 
@@ -82,11 +82,21 @@ export function ProductionForm({ close }) {
   </form></Modal>;
 }
 
-export function PaymentForm({ close }) {
+export function PaymentForm({ close, payment = null }) {
   const { state, mutate } = useERP();
-  const [direction, setDirection] = useState("Receipt"), [paymentMethod, setPaymentMethod] = useState("Cheque"), [error, setError] = useState("");
-  const submit = (e) => { e.preventDefault(); try { mutate(s => postPayment(s, { ...Object.fromEntries(new FormData(e.currentTarget)), direction }), "accounts"); close(); } catch (err) { setError(err.message); } };
-  return <Modal title="Record party payment" eyebrow="CUSTOMER RECEIPT / VENDOR PAYMENT" close={close}><form onSubmit={submit}><div className="segmented"><button type="button" className={direction === "Receipt" ? "active" : ""} onClick={() => setDirection("Receipt")}>Customer receipt</button><button type="button" className={direction === "Payment" ? "active" : ""} onClick={() => setDirection("Payment")}>Vendor payment</button></div><div className="form-grid two"><Field label="Party"><SearchableSelect name="partyId" required><option value="">Select party</option>{state.parties.filter(p => direction === "Receipt" ? ["Customer", "Both"].includes(p.type) : ["Supplier", "Both"].includes(p.type)).map(p => <option value={p.id} key={p.id}>{p.name}</option>)}</SearchableSelect></Field><Field label="Posting date"><input name="date" type="date" defaultValue={dateNow()} required /></Field><Field label="Amount"><input name="amount" type="number" min="0.01" step="0.01" required /></Field><Field label="Payment type"><SearchableSelect name="paymentMethod" value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} required><option>Cheque</option><option>Bank transfer</option><option>Cash</option><option>Online payment</option><option>Other</option></SearchableSelect></Field><Field label="Cash / bank account"><SearchableSelect name="accountId" required><option value="">Select account</option>{state.accounts.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}</SearchableSelect></Field>{paymentMethod === "Cheque" && <><Field label="Cheque date"><input name="chequeDate" type="date" defaultValue={dateNow()} required /></Field><Field label="Cheque number"><input name="chequeNumber" required /></Field></>}<Field label="Reference"><input name="reference" /></Field><Field label="Description"><input name="description" /></Field></div><ErrorText>{error}</ErrorText><FormActions close={close} submit={`Post ${direction.toLowerCase()}`} /></form></Modal>;
+  const [direction, setDirection] = useState(payment?.direction || "Receipt"), [paymentMethod, setPaymentMethod] = useState(payment?.paymentMethod || "Cheque"), [error, setError] = useState("");
+  useEffect(() => {
+    if (payment) return undefined;
+    const chooseDirection = event => {
+      const button = event.target.closest(".segmented button");
+      if (!button) return;
+      setDirection(button.textContent.includes("Vendor") ? "Payment" : "Receipt");
+    };
+    document.addEventListener("click", chooseDirection);
+    return () => document.removeEventListener("click", chooseDirection);
+  }, [payment]);
+  const submit = (e) => { e.preventDefault(); try { const values = { ...Object.fromEntries(new FormData(e.currentTarget)), direction }; mutate(s => payment ? updatePayment(s, payment.id, values) : postPayment(s, values), "accounts"); close(); } catch (err) { setError(err.message); } };
+  return <Modal title={payment ? `Edit ${payment.document}` : "Record party payment"} eyebrow="CUSTOMER RECEIPT / VENDOR PAYMENT" close={close}><form onSubmit={submit}><div className="segmented"><button type="button" className={direction === "Receipt" ? "active" : ""} disabled={!!payment}>Customer receipt</button><button type="button" className={direction === "Payment" ? "active" : ""} disabled={!!payment}>Vendor payment</button></div><div className="form-grid two"><Field label="Party"><SearchableSelect name="partyId" defaultValue={payment?.partyId || ""} required><option value="">Select party</option>{state.parties.filter(p => direction === "Receipt" ? ["Customer", "Both"].includes(p.type) : ["Supplier", "Both"].includes(p.type)).map(p => <option value={p.id} key={p.id}>{p.name}</option>)}</SearchableSelect></Field><Field label="Posting date"><input name="date" type="date" defaultValue={payment?.date || dateNow()} required /></Field><Field label="Amount"><input name="amount" type="number" min="0.01" step="0.01" defaultValue={payment?.amount || ""} required /></Field><Field label="Payment type"><SearchableSelect name="paymentMethod" value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} required><option>Cheque</option><option>Bank transfer</option><option>Cash</option><option>Online payment</option><option>Other</option></SearchableSelect></Field><Field label="Cash / bank account"><SearchableSelect name="accountId" defaultValue={payment?.accountId || ""} required><option value="">Select account</option>{state.accounts.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}</SearchableSelect></Field>{paymentMethod === "Cheque" && <><Field label="Cheque date"><input name="chequeDate" type="date" defaultValue={payment?.chequeDate || dateNow()} required /></Field><Field label="Cheque number"><input name="chequeNumber" defaultValue={payment?.chequeNumber || ""} required /></Field></>}<Field label="Reference"><input name="reference" defaultValue={payment?.reference || ""} /></Field><Field label="Description"><input name="description" defaultValue={payment?.description || ""} /></Field></div>{payment && <p className="form-note">Saving reverses the previous ledger and journal posting, then reposts the corrected payment under the same document number.</p>}<ErrorText>{error}</ErrorText><FormActions close={close} submit={payment ? "Save payment changes" : `Post ${direction.toLowerCase()}`} /></form></Modal>;
 }
 
 export function BankTransferForm({ close }) {

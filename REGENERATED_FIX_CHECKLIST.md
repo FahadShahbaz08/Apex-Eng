@@ -29,6 +29,7 @@ Verified in the running application:
 - Stock corrections use auditable adjustments; deleting an unused item removes only its standalone stock records, while purchase, sale, production and transfer history stays protected.
 - Cheque is the default payment method and requires cheque date/number; due and overdue cheques appear on the dashboard.
 - Cash & bank provides a Cheques in hand button, held-value summary, detailed current-held register, full history and audited status transitions.
+- Payment register rows provide Edit and Delete actions. Edit keeps the document number and replaces its linked ledger/journal posting; Delete removes those linked entries after confirmation. Both actions appear in the administrator activity log.
 - A full-screen safety lock blocks editing whenever the browser is offline or the backend cannot ping MongoDB, including connected-Wi-Fi-without-internet cases.
 - Failed writes restore the last confirmed server snapshot, and connectivity is automatically retested every five seconds.
 - Intra-bank transfers post one balanced journal entry and update both selected account balances.
