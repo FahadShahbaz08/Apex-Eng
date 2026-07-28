@@ -30,6 +30,7 @@ Verified in the running application:
 - Cheque is the default payment method and requires cheque date/number; due and overdue cheques appear on the dashboard.
 - Cash & bank provides a Cheques in hand button, held-value summary, detailed current-held register, full history and audited status transitions.
 - Payment register rows provide Edit and Delete actions. Edit keeps the document number and replaces its linked ledger/journal posting; Delete removes those linked entries after confirmation. Both actions appear in the administrator activity log.
+- Vendor cheque payments use a two-stage posting: Accounts Payable is reduced on the posting date through Cheques Issued, and the selected cash/bank account is reduced on the cheque date. Future-dated entries do not reduce the current displayed account balance.
 - A full-screen safety lock blocks editing whenever the browser is offline or the backend cannot ping MongoDB, including connected-Wi-Fi-without-internet cases.
 - Failed writes restore the last confirmed server snapshot, and connectivity is automatically retested every five seconds.
 - Intra-bank transfers post one balanced journal entry and update both selected account balances.

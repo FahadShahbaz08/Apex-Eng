@@ -41,6 +41,7 @@ Import the complete source repository into Vercel; do not upload `.next`. Add th
 - Cash & bank includes a clickable Cheques in hand register with customer, amount, dates, account, reference and due-state details
 - cheque workflow statuses include In hand, Deposited, Cleared and Bounced while preserving complete cheque history
 - payment-register entries can be edited or deleted; linked party-ledger and journal postings are safely reversed/reposted and every change is audit logged
+- post-dated vendor cheques reduce the supplier payable immediately, but the selected cash/bank balance is reduced automatically only on the cheque date
 - Cash, bank transfer, online payment and other payment methods remain available
 - balanced intra-bank transfers move value between any two cash/bank accounts and appear in their own register
 - overall, party, account and invoice ledgers
