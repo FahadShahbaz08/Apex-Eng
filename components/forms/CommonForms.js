@@ -23,8 +23,32 @@ export function ItemForm({ close, defaultType = "Finished Good", item = null }) 
   const rawOnly = (item?.type || defaultType) === "Raw Material";
   const [type, setType] = useState(item?.type || defaultType);
   const generatedSku = item?.sku || nextItemSku(state, type);
+  const labourSuppliers = state.parties.filter(party => ["Supplier", "Both"].includes(party.type));
+  const abuKiMazduri = labourSuppliers.find(party => party.name.trim().toLowerCase() === "abu ki mazduri");
+  const labourSupplierId = item?.labourSupplierId || abuKiMazduri?.id || "";
   const { submit, error } = useSubmit(close, (s, f) => item ? updateItem(s, item.id, Object.fromEntries(f)) : addItem(s, Object.fromEntries(f)), "items");
-  return <Modal title={item ? `Edit ${item.name}` : rawOnly ? "Add raw material" : "Add item or product"} eyebrow={rawOnly ? "RAW MATERIAL MASTER" : "ITEM MASTER"} close={close} wide><form onSubmit={submit}><div className="form-grid three"><Field label={rawOnly ? "Raw material name" : "Item name"}><input name="name" defaultValue={item?.name || ""} required /></Field><Field label="SKU / item code"><input name="sku" value={generatedSku} readOnly /></Field>{rawOnly ? <Field label="Item type"><input name="type" value="Raw Material" readOnly /></Field> : <Field label="Item type"><SearchableSelect name="type" value={type} onChange={e => setType(e.target.value)}><option>Finished Good</option><option>Consumable</option><option>Other</option></SearchableSelect></Field>}<Field label="Category"><input name="category" defaultValue={item?.category || ""} placeholder="Steel, bearing, hub..." /></Field><Field label="Unit"><SearchableSelect name="unit" defaultValue={item?.unit || "Pieces"}><option>Pieces</option><option>Kg</option><option>Box</option></SearchableSelect></Field><Field label="Minimum stock"><input name="minStock" type="number" min="0" step="0.01" defaultValue={item?.minStock || 0} /></Field><Field label="Current / average cost"><input name="cost" type="number" min="0" step="0.01" defaultValue={item?.cost || 0} /></Field><Field label="Default sale rate"><input name="saleRate" type="number" min="0" step="0.01" defaultValue={item?.saleRate || 0} /></Field>{!item&&<><Field label="Opening quantity"><input name="openingQty" type="number" min="0" step="0.01" defaultValue="0" /></Field><Field label="Opening stock rack (optional)"><SearchableSelect name="rackId"><option value="">No rack / unassigned stock</option>{state.racks.map(r => <option key={r.id} value={r.id}>{r.code} — {r.name}</option>)}</SearchableSelect></Field></>}<Field label="Barcode"><input name="barcode" defaultValue={item?.barcode || ""} /></Field><Field label="Description"><input name="description" defaultValue={item?.description || ""} /></Field></div><p className="form-note">{item ? "Use a stock adjustment to change on-hand quantity; editing keeps the movement ledger intact." : "The SKU is generated from the item type and the next available sequence number."}</p><ErrorText>{error}</ErrorText><FormActions close={close} submit={item ? "Save item changes" : rawOnly ? "Create raw material" : "Create item"} /></form></Modal>;
+  return <Modal title={item ? `Edit ${item.name}` : rawOnly ? "Add raw material" : "Add item or product"} eyebrow={rawOnly ? "RAW MATERIAL MASTER" : "ITEM MASTER"} close={close} wide><form onSubmit={submit}>
+    <div className="form-grid three">
+      <Field label={rawOnly ? "Raw material name" : "Item name"}><input name="name" defaultValue={item?.name || ""} required /></Field>
+      <Field label="SKU / item code"><input name="sku" value={generatedSku} readOnly /></Field>
+      {rawOnly ? <Field label="Item type"><input name="type" value="Raw Material" readOnly /></Field> : <Field label="Item type"><SearchableSelect name="type" value={type} onChange={e => setType(e.target.value)}><option>Finished Good</option><option>Consumable</option><option>Other</option></SearchableSelect></Field>}
+      <Field label="Category"><input name="category" defaultValue={item?.category || ""} placeholder="Steel, bearing, hub..." /></Field>
+      <Field label="Unit"><SearchableSelect name="unit" defaultValue={item?.unit || "Pieces"}><option>Pieces</option><option>Kg</option><option>Box</option></SearchableSelect></Field>
+      <Field label="Minimum stock"><input name="minStock" type="number" min="0" step="0.01" defaultValue={item?.minStock || 0} /></Field>
+      <Field label="Current / average cost"><input name="cost" type="number" min="0" step="0.01" defaultValue={item?.cost || 0} /></Field>
+      <Field label="Default sale rate"><input name="saleRate" type="number" min="0" step="0.01" defaultValue={item?.saleRate || 0} /></Field>
+      {!rawOnly && type === "Finished Good" && <>
+        <Field label="Labour cost per unit"><input name="labourCost" type="number" min="0" step="0.01" defaultValue={item?.labourCost || 0} /></Field>
+        <Field label="Laser marking cost per unit"><input name="laserMarkingCost" type="number" min="0" step="0.01" defaultValue={item?.laserMarkingCost || 0} /></Field>
+        <Field label="Labour supplier account"><SearchableSelect name="labourSupplierId" defaultValue={labourSupplierId} searchPlaceholder="Search suppliers…"><option value="">Select supplier</option>{labourSuppliers.map(party => <option key={party.id} value={party.id}>{party.name}</option>)}</SearchableSelect></Field>
+      </>}
+      {!item&&<><Field label="Opening quantity"><input name="openingQty" type="number" min="0" step="0.01" defaultValue="0" /></Field><Field label="Opening stock rack (optional)"><SearchableSelect name="rackId"><option value="">No rack / unassigned stock</option>{state.racks.map(r => <option key={r.id} value={r.id}>{r.code} — {r.name}</option>)}</SearchableSelect></Field></>}
+      <Field label="Barcode"><input name="barcode" defaultValue={item?.barcode || ""} /></Field>
+      <Field label="Description"><input name="description" defaultValue={item?.description || ""} /></Field>
+    </div>
+    <p className="form-note">{type === "Finished Good" ? "Labour and laser rates are copied into each new invoice. Later product edits never change old invoices. Abu Ki Mazduri is selected automatically when that supplier exists." : item ? "Use a stock adjustment to change on-hand quantity; editing keeps the movement ledger intact." : "The SKU is generated from the item type and the next available sequence number."}</p>
+    <ErrorText>{error}</ErrorText><FormActions close={close} submit={item ? "Save item changes" : rawOnly ? "Create raw material" : "Create item"} />
+  </form></Modal>;
 }
 
 export function PartyForm({ close, defaultType = "Customer", party = null }) {

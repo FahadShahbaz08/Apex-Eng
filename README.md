@@ -42,6 +42,10 @@ Import the complete source repository into Vercel; do not upload `.next`. Add th
 - cheque workflow statuses include In hand, Deposited, Cleared and Bounced while preserving complete cheque history
 - customer receipts and vendor payments in the payment register can both be edited or deleted; linked party-ledger and journal postings are safely reversed/reposted and every change is audit logged
 - post-dated vendor cheques reduce the supplier payable immediately, but the selected cash/bank balance is reduced automatically only on the cheque date
+- pending customer orders can be reopened and edited without changing their order number or workflow status
+- finished products support editable labour and laser-marking cost per unit plus a labour supplier; each new invoice snapshots those rates and creates a detailed supplier payable without changing older invoices
+- the supplier named `Abu Ki Mazduri` is selected automatically as the labour account when it exists
+- production and expense forms use consistent searchable dropdowns for BOMs, racks, expense categories and cash/bank accounts
 - Cash, bank transfer, online payment and other payment methods remain available
 - balanced intra-bank transfers move value between any two cash/bank accounts and appear in their own register
 - overall, party, account and invoice ledgers
