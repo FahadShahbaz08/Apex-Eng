@@ -26,6 +26,14 @@ html,body{font-size:16px}
 .order-line{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 28px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
 .order-line b{text-align:right}.order-line>button{border:0;background:transparent;font-size:18px}.order-head{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
 @media(max-width:700px){.order-line{grid-template-columns:1fr 1fr}.order-head{display:none}.permission-grid{grid-template-columns:1fr 1fr}}
+
+/* Runtime invoice costing: wide, aligned labour/laser columns with safe horizontal scrolling. */
+.modal.wide{width:min(1180px,97vw)}
+.line-editor{overflow-x:auto}
+.line-grid.sale-line-grid{grid-template-columns:2fr 1fr .65fr .8fr .85fr .85fr 1fr 24px;min-width:1080px}
+.service-line{display:grid;grid-template-columns:1.2fr 1.6fr .55fr .7fr .8fr 24px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);min-width:900px}
+.service-line b{text-align:right}.service-line>button{border:0;background:transparent;font-size:18px}.service-head{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.service-total{width:340px;margin-left:auto}
 .searchable-select{position:relative;min-width:0;width:100%}.searchable-select>input[type="search"]{width:100%;padding-right:34px}.searchable-select:after{content:"⌄";position:absolute;right:11px;top:50%;transform:translateY(-50%);pointer-events:none}.combobox-menu{position:absolute;z-index:100;left:0;right:0;top:calc(100% + 3px);max-height:260px;overflow:auto;background:var(--panel);border:1px solid var(--ink);box-shadow:var(--shadow)}.combobox-menu button,.combobox-menu span{display:block;width:100%;border:0;border-bottom:1px solid var(--line);background:var(--panel);color:var(--ink);padding:10px;text-align:left}.combobox-menu button:hover,.combobox-menu button[aria-selected="true"]{background:var(--ink);color:var(--inverse)}.native-combobox-select{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important}.native-combobox-input{display:block;width:100%}
 
 /* Requested 1.3x typography scale. Supporting controls and layout stay proportional. */

@@ -34,6 +34,8 @@ Verified in the running application:
 - Pending-order Edit preserves the order number/status while allowing customer, dates, notes, products, quantities and prices to change.
 - Finished-good master data includes labour cost/unit, laser-marking cost/unit and labour supplier. New invoices snapshot those values, add detailed labour/laser lines to the supplier ledger and create balanced payable journals; historical invoices retain their original snapshots after product edits.
 - `Abu Ki Mazduri` is the automatic labour-supplier default when that supplier exists. A zero laser-marking rate creates no laser charge.
+- Every sales-invoice line exposes Labour/unit and Laser/unit at runtime. The values begin with the product defaults, remain editable for that invoice, and update live payable totals without changing the customer sale amount.
+- Purchases includes Outside service bill for tempering, coloring, threading, laser work and arbitrary services. It posts service expense plus supplier payable/payment, creates detailed supplier-ledger lines, never moves stock, and supports edit/delete reversal.
 - Expense and production dropdowns use the searchable combobox UI consistently and submit their selected values correctly.
 - A full-screen safety lock blocks editing whenever the browser is offline or the backend cannot ping MongoDB, including connected-Wi-Fi-without-internet cases.
 - Failed writes restore the last confirmed server snapshot, and connectivity is automatically retested every five seconds.
