@@ -1,6 +1,7 @@
 "use client";
 
 import { Children, isValidElement, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 export function useDropdownSearch() {
   useEffect(() => {
@@ -34,7 +35,7 @@ export function SearchableSelect({ children, onChange, searchPlaceholder = "Sear
   const text = value => Children.toArray(value).map(part => typeof part === "string" || typeof part === "number" ? part : "").join("");
   const options = useMemo(() => Children.toArray(children).filter(child => isValidElement(child) && child.type === "option").map(child => ({ value: String(child.props.value ?? text(child.props.children)), label: text(child.props.children), disabled: child.props.disabled })), [children]);
   const controlled = props.value !== undefined, initial = String(props.defaultValue ?? "");
-  const [internal, setInternal] = useState(initial), [query, setQuery] = useState(""), [open, setOpen] = useState(false);
+  const [internal, setInternal] = useState(initial), [query, setQuery] = useState(""), [open, setOpen] = useState(false), [menuPosition, setMenuPosition] = useState(null);
   const inputRef = useRef(null), selectedValue = controlled ? String(props.value ?? "") : internal;
   const selected = options.find(option => option.value === selectedValue), visible = options.filter(option => option.value && option.label.toLowerCase().includes(query.trim().toLowerCase()));
   const choose = option => {
@@ -43,8 +44,25 @@ export function SearchableSelect({ children, onChange, searchPlaceholder = "Sear
     setQuery(""); setOpen(false); inputRef.current?.setCustomValidity("");
     onChange?.({ target: { value: option.value, name: props.name }, currentTarget: { value: option.value, name: props.name } });
   };
+  useEffect(() => {
+    if (!open) { setMenuPosition(null); return undefined; }
+    const position = () => {
+      const rect = inputRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const below = window.innerHeight - rect.bottom - 8;
+      const above = rect.top - 8;
+      const placeAbove = below < 190 && above > below;
+      const maxHeight = Math.max(120, Math.min(300, placeAbove ? above : below));
+      setMenuPosition({ left: Math.max(8, Math.min(rect.left, window.innerWidth - rect.width - 8)), width: Math.min(rect.width, window.innerWidth - 16), maxHeight, ...(placeAbove ? { bottom: window.innerHeight - rect.top + 3 } : { top: rect.bottom + 3 }) });
+    };
+    position();
+    window.addEventListener("resize", position);
+    window.addEventListener("scroll", position, true);
+    return () => { window.removeEventListener("resize", position); window.removeEventListener("scroll", position, true); };
+  }, [open]);
   const display = open ? query : selected?.label || "";
-  return <div className="searchable-select"><input ref={inputRef} type="search" value={display} placeholder={selected?.label || options.find(option => !option.value)?.label || searchPlaceholder} aria-label={searchPlaceholder} autoComplete="off" required={props.required} onFocus={event => { setQuery(""); setOpen(true); event.currentTarget.select(); }} onChange={event => { setQuery(event.target.value); setOpen(true); event.currentTarget.setCustomValidity("Choose an option from the list."); }} onBlur={() => setTimeout(() => { setOpen(false); setQuery(""); inputRef.current?.setCustomValidity(selectedValue ? "" : props.required ? "Choose an option from the list." : ""); }, 120)} /><input type="hidden" name={props.name} value={selectedValue} />{open && <div className="combobox-menu" role="listbox">{visible.length ? visible.map(option => <button type="button" role="option" aria-selected={option.value === selectedValue} disabled={option.disabled} key={option.value} onMouseDown={event => event.preventDefault()} onClick={() => choose(option)}>{option.label}</button>) : <span>No matching option</span>}</div>}</div>;
+  const menu = open && menuPosition && <div className="combobox-menu combobox-portal" style={menuPosition} role="listbox">{visible.length ? visible.map(option => <button type="button" role="option" aria-selected={option.value === selectedValue} disabled={option.disabled} key={option.value} onMouseDown={event => event.preventDefault()} onClick={() => choose(option)}>{option.label}</button>) : <span>No matching option</span>}</div>;
+  return <div className="searchable-select"><input ref={inputRef} type="search" value={display} placeholder={selected?.label || options.find(option => !option.value)?.label || searchPlaceholder} aria-label={searchPlaceholder} autoComplete="off" required={props.required} onFocus={event => { setQuery(""); setOpen(true); event.currentTarget.select(); }} onChange={event => { setQuery(event.target.value); setOpen(true); event.currentTarget.setCustomValidity("Choose an option from the list."); }} onBlur={() => setTimeout(() => { setOpen(false); setQuery(""); inputRef.current?.setCustomValidity(selectedValue ? "" : props.required ? "Choose an option from the list." : ""); }, 120)} /><input type="hidden" name={props.name} value={selectedValue} />{typeof document !== "undefined" && menu ? createPortal(menu, document.body) : null}</div>;
 }
 
 export function Button({ children, variant = "solid", ...props }) {
