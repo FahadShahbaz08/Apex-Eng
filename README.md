@@ -46,6 +46,7 @@ Import the complete source repository into Vercel; do not upload `.next`. Add th
 - finished products support editable labour and laser-marking cost per unit plus a labour supplier; each new invoice snapshots those rates and creates a detailed supplier payable without changing older invoices
 - the supplier named `Abu Ki Mazduri` is selected automatically as the labour account when it exists
 - sales-invoice rows show editable Labour/unit and Laser/unit values at runtime, with live total labour and laser payables before posting
+- sales invoices can directly include finished goods or raw materials; sold raw-material quantities are deducted from the raw-material stock ledger and valued through COGS
 - outside-service bills record tempering, coloring, threading, laser work or any custom service against a supplier without creating any inventory movement; service bills can be edited or deleted
 - production and expense forms use consistent searchable dropdowns for BOMs, racks, expense categories and cash/bank accounts
 - Cash, bank transfer, online payment and other payment methods remain available

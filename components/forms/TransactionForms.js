@@ -9,6 +9,8 @@ import { Button, ErrorText, Field, FormActions, Modal, SearchableSelect } from "
 const emptyLine = () => ({ itemId: "", rackId: "", quantity: 1, rate: 0, labourCost: 0, laserMarkingCost: 0, labourSupplierId: "" });
 
 function LinesEditor({ lines, setLines, items, racks, sale = false }) {
+  const { state } = useERP();
+  if (sale) items = state.items.filter(item => ["Finished Good", "Raw Material"].includes(item.type)).map(item => ({ ...item, sku: `${item.type === "Raw Material" ? "RAW" : "FG"} · ${item.sku}` }));
   const update = (index, key, value) => setLines(lines.map((line, i) => {
     if (i !== index) return line;
     const item = key === "itemId" ? items.find(x => x.id === value) : null;
