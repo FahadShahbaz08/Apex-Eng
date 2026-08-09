@@ -69,6 +69,19 @@ export function Button({ children, variant = "solid", ...props }) {
   return <button className={`button ${variant}`} {...props}>{children}</button>;
 }
 
+export function AsyncButton({ children, busyText = "Preparing image…", onClick, ...props }) {
+  const [busy, setBusy] = useState(false);
+  const run = async event => {
+    if (busy) return;
+    setBusy(true);
+    await new Promise(resolve => requestAnimationFrame(() => resolve()));
+    try { await onClick?.(event); }
+    catch (error) { console.error(error); window.alert("The image could not be generated. Please try again."); }
+    finally { setBusy(false); }
+  };
+  return <Button type="button" {...props} disabled={busy || props.disabled} aria-busy={busy} onClick={run}>{busy && <span className="button-spinner" aria-hidden="true" />}{busy ? busyText : children}</Button>;
+}
+
 export function Field({ label, hint, children }) {
   return <label className="field"><span>{label}</span>{children}{hint && <small>{hint}</small>}</label>;
 }
