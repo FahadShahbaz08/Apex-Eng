@@ -182,3 +182,79 @@ html,body{font-size:21px}.app-shell{grid-template-columns:285px minmax(0,1fr)}.s
  .line-grid>*:not(button),.service-line>*:not(button),.order-line>*:not(button){grid-column:1}
  .line-grid>button,.service-line>button,.order-line>button{grid-column:1;justify-self:end}
 }
+
+/* POS-inspired mobile-first refinement and clearer document entry. */
+.mobile-bottom-nav,.mobile-sheet-handle{display:none}
+.line-field{display:block;min-width:0}
+.line-field>span,.line-total>span{display:none}
+.line-field>.searchable-select,.line-field>input{width:100%}
+.line-total{min-width:0;text-align:right}
+.line-grid.sale-line-grid{grid-template-columns:minmax(380px,3.7fr) minmax(112px,.62fr) minmax(90px,.62fr) minmax(105px,.75fr) minmax(115px,.8fr) minmax(115px,.8fr) minmax(125px,.9fr) 30px;min-width:1120px}
+.party-document-modal form>.form-grid:first-of-type>.field:first-child{grid-column:1/-1;border:2px solid var(--ink);background:var(--soft);padding:13px 15px}
+.party-document-modal form>.form-grid:first-of-type>.field:first-child>span{font-size:13px;color:var(--ink)}
+.party-document-modal form>.form-grid:first-of-type>.field:first-child input{font-size:21px;font-weight:800;background:var(--panel);border-color:var(--ink)}
+.invoice-party>div:first-child{border:2px solid var(--ink);padding:14px 16px;min-width:min(460px,60%)}
+.invoice-party>div:first-child b{font:700 26px/1.2 Georgia,serif;margin:8px 0}
+
+@media(max-width:767px){
+ .app-shell>main{padding-bottom:82px}
+ .content{padding-bottom:24px}
+ .topbar-actions{display:none}
+ .topbar{min-height:68px}
+ .topbar-identity b{font-size:19px!important}
+
+ .mobile-bottom-nav{display:grid;position:fixed;z-index:90;left:0;right:0;bottom:0;height:72px;height:calc(72px + env(safe-area-inset-bottom));padding:6px 6px calc(6px + env(safe-area-inset-bottom));grid-template-columns:repeat(5,minmax(0,1fr));background:color-mix(in srgb,var(--panel) 96%,transparent);border-top:1px solid var(--line);backdrop-filter:blur(16px);box-shadow:0 -8px 24px rgba(0,0,0,.08)}
+ .mobile-bottom-nav button{border:0;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;padding:3px 1px;font-size:10px;font-weight:700}
+ .mobile-bottom-nav button i{display:grid;place-items:center;width:28px;height:27px;border:1px solid var(--line);font-style:normal;font-size:11px}
+ .mobile-bottom-nav button span{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .mobile-bottom-nav button.active{color:var(--ink)}
+ .mobile-bottom-nav button.active i{background:var(--ink);color:var(--inverse);border-color:var(--ink)}
+
+ .modal-backdrop{display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.64)}
+ .modal,.modal.wide{width:100%;height:auto;max-height:calc(100svh - 8px);border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0;padding:0 14px calc(18px + env(safe-area-inset-bottom));animation:mobile-sheet-up .22s ease-out}
+ .mobile-sheet-handle{display:block;width:42px;height:5px;border-radius:5px;background:var(--line);margin:8px auto 2px}
+ .modal>header{top:0;margin:0 -14px 14px;padding:10px 14px 12px}
+ .modal>header h2{font-size:25px}
+ .modal>header .eyebrow{font-size:9px}
+ .form-actions{bottom:calc(-18px - env(safe-area-inset-bottom));margin-bottom:calc(-18px - env(safe-area-inset-bottom))}
+ @keyframes mobile-sheet-up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
+ .table-wrap{width:100%;margin:0;padding:0;overflow:visible}
+ .table-wrap table,.table-wrap tbody{display:block;width:100%;border:0;white-space:normal}
+ .table-wrap thead{display:none}
+ .table-wrap tbody tr{display:block;width:100%;margin:0 0 11px;border:1px solid var(--line);background:var(--panel);box-shadow:0 4px 14px rgba(0,0,0,.04)}
+ .table-wrap tbody td{display:grid;grid-template-columns:minmax(105px,.8fr) minmax(0,1.25fr);gap:12px;align-items:start;width:100%;min-height:42px;padding:10px 12px;border:0;border-bottom:1px solid var(--line);font-size:14px;text-align:left!important;white-space:normal;overflow-wrap:anywhere}
+ .table-wrap tbody td:last-child{border-bottom:0}
+ .table-wrap tbody td:empty{display:none}
+ .table-wrap tbody td:before{content:attr(data-label);font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+ .table-wrap tbody td:first-child{background:var(--soft);font-weight:800}
+ .table-wrap tbody td>*{min-width:0;max-width:100%}
+ .table-wrap .table-actions{justify-content:flex-start;flex-wrap:wrap}
+ .table-wrap .pending-order-actions{display:grid;grid-template-columns:1fr auto;min-width:0;width:100%}
+
+ .line-grid,.line-grid:not(.sale-line-grid),.line-grid.sale-line-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-width:0!important;padding:13px;border-radius:12px;gap:10px}
+ .line-grid>.item-line-field{grid-column:1/-1}
+ .line-grid>.rack-line-field{grid-column:1}
+ .line-field>span,.line-total>span{display:block;margin:0 0 5px;font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+ .line-field>.searchable-select>input,.line-field>input{font-size:15px}
+ .item-line-field>.searchable-select>input{font-size:17px;font-weight:800;white-space:normal;text-overflow:clip}
+ .line-total{grid-column:1}
+ .line-total b{display:block;text-align:left;font-size:17px}
+ .line-grid>button{grid-column:2;justify-self:end;align-self:end}
+ .add-row{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;border:1px dashed var(--ink);text-decoration:none;background:var(--panel)}
+
+ .party-document-modal form>.form-grid:first-of-type>.field:first-child{padding:12px;position:sticky;top:67px;z-index:8;box-shadow:0 5px 14px rgba(0,0,0,.08)}
+ .party-document-modal form>.form-grid:first-of-type>.field:first-child input{font-size:18px}
+ .invoice-party>div:first-child{min-width:0;width:100%;padding:14px}
+ .invoice-party>div:first-child b{font-size:24px}
+ .panel{overflow:visible}
+}
+
+@media(max-width:380px){
+ .table-wrap tbody td{grid-template-columns:92px minmax(0,1fr);padding-inline:10px}
+ .line-grid,.line-grid:not(.sale-line-grid),.line-grid.sale-line-grid{grid-template-columns:1fr}
+ .line-grid>*{grid-column:1!important}
+ .line-grid>button{justify-self:end}
+}
+
+@media print{.mobile-bottom-nav,.mobile-sheet-handle{display:none!important}}

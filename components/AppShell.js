@@ -36,6 +36,10 @@ export default function AppShell(){
    {syncError&&<div className="sync-error">{syncError}</div>}
    <section className="content">{page==="Dashboard"&&<DashboardScreen open={setModal} navigate={navigate}/>} {page==="Customers"&&<PartiesScreen kind="Customer" open={setModal} goLedger={goLedger}/>} {page==="Suppliers"&&<PartiesScreen kind="Supplier" open={setModal} goLedger={goLedger}/>} {page==="Raw materials"&&<RawMaterialsScreen open={setModal}/>} {page==="BOM"&&<BOMScreen open={setModal}/>} {page==="Production"&&<ProductionScreen open={setModal}/>} {page==="Purchases"&&<PurchasesScreen open={setModal}/>} {page==="Items & stock"&&<ItemsStockScreen open={setModal}/>} {page==="Sales & invoices"&&<SalesScreen open={setModal}/>} {page==="Pending orders"&&<PendingOrdersScreen open={setModal}/>} {page==="Cash & bank"&&<CashBankScreen open={setModal}/>} {page==="Ledger"&&<LedgersScreen initialPartyId={ledgerParty} initialNature={ledgerNature} clearInitial={()=>setLedgerParty("")}/>} {page==="Expenses"&&<ExpensesScreen open={setModal}/>} {page==="Reports"&&<ReportsScreen/>} {page==="Settings & backup"&&<SettingsScreen open={setModal}/>}</section>
   </main>
+  <nav className="mobile-bottom-nav" aria-label="Mobile shortcuts">
+   {[["Dashboard","D"],["Sales & invoices","S"],["Items & stock","I"],["Ledger","L"]].map(([name,icon])=><button type="button" key={name} className={page===name?"active":""} onClick={()=>navigate(name)}><i>{icon}</i><span>{name==="Sales & invoices"?"Sales":name==="Items & stock"?"Stock":name}</span></button>)}
+   <button type="button" className={!["Dashboard","Sales & invoices","Items & stock","Ledger"].includes(page)?"active":""} onClick={()=>setMobileNavOpen(true)}><i>•••</i><span>More</span></button>
+  </nav>
   <Modals modal={modal} close={()=>setModal("")}/>
  </div>;
 }

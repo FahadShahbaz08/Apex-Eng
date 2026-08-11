@@ -1,6 +1,6 @@
 "use client";
 
-import { Children, isValidElement, useEffect, useMemo, useRef, useState } from "react";
+import { Children, cloneElement, isValidElement, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 export function useDropdownSearch() {
@@ -82,8 +82,8 @@ export function AsyncButton({ children, busyText = "Preparing image…", onClick
   return <Button type="button" {...props} disabled={busy || props.disabled} aria-busy={busy} onClick={run}>{busy && <span className="button-spinner" aria-hidden="true" />}{busy ? busyText : children}</Button>;
 }
 
-export function Field({ label, hint, children }) {
-  return <label className="field"><span>{label}</span>{children}{hint && <small>{hint}</small>}</label>;
+export function Field({ label, hint, children, className = "" }) {
+  return <label className={`field ${className}`}><span>{label}</span>{children}{hint && <small>{hint}</small>}</label>;
 }
 
 export function Status({ children }) {
@@ -95,11 +95,17 @@ export function Empty({ title, text, action }) {
 }
 
 export function Table({ headers, children }) {
-  return <div className="table-wrap"><table><thead><tr>{headers.map((h) => <th key={h}>{h}</th>)}</tr></thead><tbody>{children}</tbody></table></div>;
+  const labelledRows=Children.map(children,row=>{
+    if(!isValidElement(row))return row;
+    const cells=Children.map(row.props.children,(cell,index)=>isValidElement(cell)?cloneElement(cell,{"data-label":headers[index]||""}):cell);
+    return cloneElement(row,{},cells);
+  });
+  return <div className="table-wrap"><table><thead><tr>{headers.map((h) => <th key={h}>{h}</th>)}</tr></thead><tbody>{labelledRows}</tbody></table></div>;
 }
 
 export function Modal({ title, eyebrow, close, children, wide = false }) {
-  return <div className="modal-backdrop" onMouseDown={(e) => e.target === e.currentTarget && close()}><div className={`modal ${wide ? "wide" : ""}`}><header><div><p className="eyebrow">{eyebrow}</p><h2>{title}</h2></div><button onClick={close}>×</button></header>{children}</div></div>;
+  const partyDocument=/CUSTOMER RECEIVABLE|VENDOR PAYABLE/.test(eyebrow||"");
+  return <div className="modal-backdrop" onMouseDown={(e) => e.target === e.currentTarget && close()}><div className={`modal ${wide ? "wide" : ""} ${partyDocument?"party-document-modal":""}`}><div className="mobile-sheet-handle"/><header><div><p className="eyebrow">{eyebrow}</p><h2>{title}</h2></div><button onClick={close}>×</button></header>{children}</div></div>;
 }
 
 export function Panel({ eyebrow, title, description, actions, children, className = "" }) {
