@@ -37,16 +37,16 @@ export function ItemForm({ close, defaultType = "Finished Good", item = null }) 
       <Field label="Minimum stock"><input name="minStock" type="number" min="0" step="0.01" defaultValue={item?.minStock || 0} /></Field>
       <Field label="Current / average cost"><input name="cost" type="number" min="0" step="0.01" defaultValue={item?.cost || 0} /></Field>
       <Field label="Default sale rate"><input name="saleRate" type="number" min="0" step="0.01" defaultValue={item?.saleRate || 0} /></Field>
-      {!rawOnly && type === "Finished Good" && <>
+      {(rawOnly || type === "Finished Good") && <>
         <Field label="Labour cost per unit"><input name="labourCost" type="number" min="0" step="0.01" defaultValue={item?.labourCost || 0} /></Field>
         <Field label="Laser marking cost per unit"><input name="laserMarkingCost" type="number" min="0" step="0.01" defaultValue={item?.laserMarkingCost || 0} /></Field>
-        <Field label="Labour supplier account"><SearchableSelect name="labourSupplierId" defaultValue={labourSupplierId} searchPlaceholder="Search suppliers…"><option value="">Select supplier</option>{labourSuppliers.map(party => <option key={party.id} value={party.id}>{party.name}</option>)}</SearchableSelect></Field>
+        <Field label="Labour supplier account"><SearchableSelect name="labourSupplierId" defaultValue={labourSupplierId} required searchPlaceholder="Search suppliers…"><option value="">Select supplier</option>{labourSuppliers.map(party => <option key={party.id} value={party.id}>{party.name}</option>)}</SearchableSelect></Field>
       </>}
       {!item&&<><Field label="Opening quantity"><input name="openingQty" type="number" min="0" step="0.01" defaultValue="0" /></Field><Field label="Opening stock rack (optional)"><SearchableSelect name="rackId"><option value="">No rack / unassigned stock</option>{state.racks.map(r => <option key={r.id} value={r.id}>{r.code} — {r.name}</option>)}</SearchableSelect></Field></>}
       <Field label="Barcode"><input name="barcode" defaultValue={item?.barcode || ""} /></Field>
       <Field label="Description"><input name="description" defaultValue={item?.description || ""} /></Field>
     </div>
-    <p className="form-note">{type === "Finished Good" ? "Labour and laser rates are copied into each new invoice. Later product edits never change old invoices. Abu Ki Mazduri is selected automatically when that supplier exists." : item ? "Use a stock adjustment to change on-hand quantity; editing keeps the movement ledger intact." : "The SKU is generated from the item type and the next available sequence number."}</p>
+    <p className="form-note">{rawOnly || type === "Finished Good" ? "Labour and laser rates are copied into each new invoice for this item. Select the supplier account that must receive the payable. Zero cost means no labour payable; later edits never change old invoices. Abu Ki Mazduri is selected automatically when that supplier exists." : item ? "Use a stock adjustment to change on-hand quantity; editing keeps the movement ledger intact." : "The SKU is generated from the item type and the next available sequence number."}</p>
     <ErrorText>{error}</ErrorText><FormActions close={close} submit={item ? "Save item changes" : rawOnly ? "Create raw material" : "Create item"} />
   </form></Modal>;
 }
