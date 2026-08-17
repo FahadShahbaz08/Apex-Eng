@@ -189,7 +189,7 @@ html,body{font-size:21px}.app-shell{grid-template-columns:285px minmax(0,1fr)}.s
 .line-field>span,.line-total>span{display:none}
 .line-field>.searchable-select,.line-field>input{width:100%}
 .line-total{min-width:0;text-align:right}
-.line-grid.sale-line-grid{grid-template-columns:minmax(380px,3.7fr) minmax(112px,.62fr) minmax(90px,.62fr) minmax(105px,.75fr) minmax(115px,.8fr) minmax(115px,.8fr) minmax(125px,.9fr) 30px;min-width:1120px}
+.line-grid.sale-line-grid{grid-template-columns:minmax(330px,3fr) minmax(112px,.62fr) minmax(90px,.62fr) minmax(105px,.75fr) minmax(165px,1.1fr) minmax(125px,.8fr) minmax(125px,.9fr) 30px;min-width:1130px}
 .party-document-modal form>.form-grid:first-of-type>.field:first-child{grid-column:1/-1;border:2px solid var(--ink);background:var(--soft);padding:13px 15px}
 .party-document-modal form>.form-grid:first-of-type>.field:first-child>span{font-size:13px;color:var(--ink)}
 .party-document-modal form>.form-grid:first-of-type>.field:first-child input{font-size:21px;font-weight:800;background:var(--panel);border-color:var(--ink)}
